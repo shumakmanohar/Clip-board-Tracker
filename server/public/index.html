@@ -10,22 +10,72 @@
 				font-family: Arial, sans-serif;
 				padding: 20px;
 			}
-			#clipboardData {
-				font-size: 18px;
-				color: #333;
+			#clipboardContainer {
+				max-height: 400px;
+				overflow-y: auto;
+				border: 1px solid #ccc;
+				padding: 10px;
+				margin-bottom: 10px;
+			}
+			.clipboardItem {
+				padding: 5px;
+				border-bottom: 1px solid #ddd;
+			}
+			button {
+				padding: 10px 15px;
+				font-size: 16px;
+				cursor: pointer;
+				background-color: #007bff;
+				color: white;
+				border: none;
+				border-radius: 5px;
+				margin-right: 10px;
+			}
+			button:hover {
+				background-color: #0056b3;
 			}
 		</style>
 	</head>
 	<body>
-		<h2>Clipboard Monitor</h2>
-		<p>Latest copied text:</p>
-		<p id="clipboardData">Waiting for clipboard data...</p>
+		<h2>PANDA 🐼 Clipboard Monitor</h2>
+		<h3>By PandaGang.</h3>
+		<p>All copied texts (latest on top):</p>
+		<div id="clipboardContainer"></div>
+		<button id="copyAllButton">Copy All</button>
+		<button id="clearButton">Clear</button>
 
 		<script>
 			const socket = io();
+			const clipboardContainer = document.getElementById("clipboardContainer");
+			const copyAllButton = document.getElementById("copyAllButton");
+			const clearButton = document.getElementById("clearButton");
 
 			socket.on("updateClipboard", (text) => {
-				document.getElementById("clipboardData").innerText = text;
+				// Create a new div for the copied text
+				const newEntry = document.createElement("div");
+				newEntry.classList.add("clipboardItem");
+				newEntry.innerText = text;
+
+				// Add the new text to the top
+				clipboardContainer.prepend(newEntry);
+			});
+
+			copyAllButton.addEventListener("click", () => {
+				var copyText = document.getElementById("clipboardItem");
+
+				// Select the text field
+				copyText.select();
+				copyText.setSelectionRange(0, 99999); // For mobile devices
+
+				// Copy the text inside the text field
+				navigator.clipboard.writeText(copyText.value);
+
+				// Alert the copied text
+				alert("Copied the text: " + copyText.value);
+			});
+
+			clearButton.addEventListener("click", () => {
+				clipboardContainer.innerHTML = ""; // Clear history
 			});
 		</script>
 	</body>
