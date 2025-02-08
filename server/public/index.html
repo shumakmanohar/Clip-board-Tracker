@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Clipboard Monitor</title>
+		<script src="/socket.io/socket.io.js"></script>
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+				padding: 20px;
+			}
+			#clipboardData {
+				font-size: 18px;
+				color: #333;
+			}
+		</style>
+	</head>
+	<body>
+		<h2>Clipboard Monitor</h2>
+		<p>Latest copied text:</p>
+		<p id="clipboardData">Waiting for clipboard data...</p>
+
+		<script>
+			const socket = io();
+
+			socket.on("updateClipboard", (text) => {
+				document.getElementById("clipboardData").innerText = text;
+			});
+		</script>
+	</body>
+</html>
